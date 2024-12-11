@@ -1,0 +1,35 @@
+<%- include('../partials/header')%>
+    <div class="container m-1 ml-4 text-left">
+        <div class="row">
+            <% for(user of allUsers){ %>
+                <% if (user.roles.includes("admin")){continue;} %>
+                    <div class="card-body border rounded my-2 mr-2">
+                        <h5 class="card-title mb-2">
+                            <%= user.firstName%>
+                                <%= user.lastName%>
+                        </h5>
+                        <p class="card-text mb-2">
+                            @<%= user.userName%>
+                        </p>
+                        <p class="card-subtitle mb-2">
+                            Email : <%= user.email%>
+                        </p>
+                        <p class="card-subtitle mb-2">
+                            Roles : <%= user.roles%>
+                        </p>
+                        <p class="card-subtitle mb-2">
+                            Address: <%= user.address.city%>, <%= user.address.country%>
+                        </p>
+                        <p class="card-subtitle mb-2">
+                            Date Of Birth: <%= user.dateOfBirth%>
+                        </p>
+                        <p class="card-subtitle">
+                            User Since: <%= user.createdAt%>
+                        </p>
+                        <a href="/admin/deleteUser/<%= user._id%>">Delete User</a>
+                    </div>
+                    <% } %>
+        </div>
+    </div>
+
+    <%- include('../partials/footer')%>

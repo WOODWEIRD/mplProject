@@ -59,7 +59,7 @@
                         <p class="m-0 p-0 mb-2">likes: <%= post.likes%>
                         </p>
                         <hr>
-                        <% if (post.author.toString()==user._id.toString()){%>
+                        <% if (post.author.toString()==user._id.toString() || user.roles.includes("admin")){%>
                             <a href="/user/deletePost/<%= post._id%>/blog" class="btn btn-danger btn-sm">Delete
                                 Post</a>
                             <%} %>
@@ -74,7 +74,8 @@
                                                 <a href="/user/blogger/<%= comment.author%>">@<%= comment.author%>
                                                 </a>:
                                             </p>
-                                            <% if (comment.user.toString()==user._id.toString()){%>
+                                            <% if (comment.user.toString()==user._id.toString() ||
+                                                user.roles.includes("admin")){%>
                                                 <a href="/user/deleteComment/<%= post._id%>/<%= comment._id%>/blog"
                                                     class="btn btn-danger btn-sm">Delete Comment</a>
                                                 <%} %>
