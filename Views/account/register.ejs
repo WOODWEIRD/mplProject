@@ -1,0 +1,54 @@
+<%- include('../partials/headerHome')%>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1>Welcome to BLOG.COM</h1>
+                <h3>Register</h3>
+                <% if(failed) {%>
+                    <p class="text-danger">Registration Failed</p>
+                    <% } %>
+            </div>
+            <div class="container col-8">
+                <form action="/register" method="post">
+                    <div class="form-group">
+                        <label for="userName">Username:</label>
+                        <input type="text" class="form-control" placeholder="Enter username" id="userName"
+                            name="userName">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" placeholder="Enter password" id="password"
+                            name="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName">First Name:</label>
+                        <input type="text" class="form-control" name="firstName" placeholder="Enter first name"
+                            id="firstName">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" class="form-control" placeholder="Enter last name" id="lastName"
+                            name="lastName">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" placeholder="Enter email" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country:</label>
+                        <input type="text" class="form-control" placeholder="Enter country" id="country" name="country">
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City:</label>
+                        <input type="text" class="form-control" placeholder="Enter city" id="city" name="city">
+                    </div>
+                    <div class="form-group">
+                        <label for="city">Date of Birth:</label>
+                        <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/footer')%>
