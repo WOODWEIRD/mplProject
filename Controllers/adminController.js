@@ -14,7 +14,7 @@ exports.getAllUsers = async (req, res) => {
     res.render('admin/allUsers', { title: "Admin All Users", user: user, allUsers: allUsers })
 }
 
-// in a post we need to delete users post first to reduce looping over comments
+//in a post we need to delete users post first to reduce looping over comments
 //then loop over remaining posts to delete users comments
 exports.deleteUser = async (req, res, next) => {
     const db = await database.getDb();
