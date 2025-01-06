@@ -4,47 +4,52 @@
             <div class="col-12 text-center">
                 <h1>Welcome to BLOG.COM</h1>
                 <h3>Register</h3>
-                <% if(failed) {%>
-                    <p class="text-danger">Registration Failed</p>
-                    <% } %>
+                <% if(errors.length!=0) {%>
+                    <% for(error of errors){%>
+                        <p class="text-danger">
+                            <%= error%>
+                        </p>
+                        <% }} %>
             </div>
             <div class="container col-8">
                 <form action="/register" method="post">
                     <div class="form-group">
                         <label for="userName">Username:</label>
                         <input type="text" class="form-control" placeholder="Enter username" id="userName"
-                            name="userName">
+                            name="userName" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Password:</label>
                         <input type="password" class="form-control" placeholder="Enter password" id="password"
-                            name="password">
+                            name="password" required>
                     </div>
                     <div class="form-group">
                         <label for="firstName">First Name:</label>
                         <input type="text" class="form-control" name="firstName" placeholder="Enter first name"
-                            id="firstName">
+                            id="firstName" required>
                     </div>
                     <div class="form-group">
                         <label for="lastName">Last Name:</label>
                         <input type="text" class="form-control" placeholder="Enter last name" id="lastName"
-                            name="lastName">
+                            name="lastName" required>
                     </div>
                     <div class="form-group">
                         <label for="email">Email:</label>
-                        <input type="email" class="form-control" placeholder="Enter email" id="email" name="email">
+                        <input type="email" class="form-control" placeholder="Enter email" id="email" name="email"
+                            required>
                     </div>
                     <div class="form-group">
                         <label for="country">Country:</label>
-                        <input type="text" class="form-control" placeholder="Enter country" id="country" name="country">
+                        <input type="text" class="form-control" placeholder="Enter country" id="country" name="country"
+                            required>
                     </div>
                     <div class="form-group">
                         <label for="city">City:</label>
-                        <input type="text" class="form-control" placeholder="Enter city" id="city" name="city">
+                        <input type="text" class="form-control" placeholder="Enter city" id="city" name="city" required>
                     </div>
                     <div class="form-group">
                         <label for="city">Date of Birth:</label>
-                        <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth">
+                        <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>

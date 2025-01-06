@@ -2,6 +2,7 @@ const database = require("../Middleware/mongoDB");
 const LoggedUser = require('./accountController');
 const Post = require("../Models/Post");
 ObjectId = require('mongodb').ObjectId;
+const { validationResult } = require('express-validator');
 
 exports.deletePost = async (req, res) => {
     const db = await database.getDb();
@@ -82,36 +83,47 @@ exports.getEditProfile = async (req, res) => {
     const userName = LoggedUser.getLoggedUser();
     const user = await users.findOne({ userName: userName });
 
-    res.render('user/editProfile', { title: "Edit Profile", user: user })
+    res.render('user/editProfile', { title: "Edit Profile", user: user, errors: [] })
 }
 
 exports.editProfile = async (req, res) => {
-    const db = await database.getDb();
-    const users = db.collection('users');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors.array())
+        res.render('user/editProfile', {
+            user: user,
+            title: "Edit Profile",
+            errors: errors.array().map(error => error.msg),
+        })
+    }
+    else {
+        const db = await database.getDb();
+        const users = db.collection('users');
 
-    const userName = LoggedUser.getLoggedUser();
-    const user = await users.findOne({ userName: userName });
+        const userName = LoggedUser.getLoggedUser();
+        const user = await users.findOne({ userName: userName });
 
-    if (user.firstName != req.body.firstName) {
-        await users.updateOne({ _id: new ObjectId(user._id) }, { $set: { firstName: req.body.firstName } })
-    }
-    if (user.lastName != req.body.lastName) {
-        await users.updateOne({ _id: new ObjectId(user._id) }, { $set: { lastName: req.body.lastName } })
-    }
-    if (user.email != req.body.email) {
-        await users.updateOne({ _id: new ObjectId(user._id) }, { $set: { email: req.body.email } })
-    }
-    if (user.address.city != req.body.city || user.address.country != req.body.country) {
-        const address = {
-            country: req.body.country,
-            city: req.body.city
+        if (user.firstName != req.body.firstName) {
+            await users.updateOne({ _id: new ObjectId(user._id) }, { $set: { firstName: req.body.firstName } })
         }
-        await users.updateOne({ _id: new ObjectId(user._id) }, { $set: { address: address } })
+        if (user.lastName != req.body.lastName) {
+            await users.updateOne({ _id: new ObjectId(user._id) }, { $set: { lastName: req.body.lastName } })
+        }
+        if (user.email != req.body.email) {
+            await users.updateOne({ _id: new ObjectId(user._id) }, { $set: { email: req.body.email } })
+        }
+        if (user.address.city != req.body.city || user.address.country != req.body.country) {
+            const address = {
+                country: req.body.country,
+                city: req.body.city
+            }
+            await users.updateOne({ _id: new ObjectId(user._id) }, { $set: { address: address } })
+        }
+        if (user.password != req.body.password) {
+            await users.updateOne({ _id: new ObjectId(user._id) }, { $set: { password: req.body.password } })
+        }
+        res.redirect("/user/profile")
     }
-    if (user.password != req.body.password) {
-        await users.updateOne({ _id: new ObjectId(user._id) }, { $set: { password: req.body.password } })
-    }
-    res.redirect("/user/profile")
 }
 
 exports.getBlogger = async (req, res) => {
@@ -187,7 +199,7 @@ exports.getBlog = async (req, res, next) => {
     } else {
         firstName = "blogger"
     }
-    res.render('user/blog', { title: "Blog", firstName: firstName, sortedPosts: sortedPosts, user: user })
+    res.render('user/blog', { title: "Blog", firstName: firstName, sortedPosts: sortedPosts, user: user, errors: [] })
 }
 
 
@@ -207,25 +219,73 @@ exports.createPost = async (req, res) => {
     const db = await database.getDb();
     const userName = LoggedUser.getLoggedUser();
     const users = db.collection('users');
-    const user = await users.findOne({ userName: userName });
-    const userId = user._id;
-    const tags = req.body.tags;
-
-    newPost = new Post({
-        title: req.body.title,
-        content: req.body.content,
-        tags: tags.split(","),
-        author: userId,
-    })
     const posts = db.collection('posts');
-    const result = await posts.insertOne(newPost);
-    if (result) {
-        console.log("Post Created")
+
+    const user = await users.findOne({ userName: userName });
+    const sortedPosts = await posts.find().sort({ createdAt: -1 }).toArray();
+
+    let firstName;
+    if (user) {
+        firstName = user.firstName;
+    } else {
+        firstName = "blogger"
+    }
+
+    if (sortedPosts) {
+        for (p of sortedPosts) {
+            const user = await users.findOne({ _id: new ObjectId(p.author) });
+            p.userName = user.userName;
+            for (comment of p.comments) {
+                const user = await users.findOne({ _id: new ObjectId(comment.user) });
+                comment.author = user.userName;
+            }
+        }
+    } else {
+        sortedPosts = [];
+    }
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors.array())
+        res.render('user/blog', {
+            title: "Blog",
+            firstName: firstName,
+            sortedPosts: sortedPosts,
+            user: user,
+            errors: errors.array().map(error => error.msg)
+        })
     }
     else {
-        console.log("Post creation failed")
+        const userId = user._id;
+        const tags = req.body.tags;
+
+        newPost = new Post({
+            title: req.body.title,
+            content: req.body.content,
+            tags: tags.split(","),
+            author: userId,
+        })
+        const posts = db.collection('posts');
+        const result = await posts.insertOne(newPost);
+        if (result) {
+            res.render('user/blog', {
+                title: "Blog",
+                firstName: firstName,
+                sortedPosts: sortedPosts,
+                user: user,
+                errors: []
+            })
+        }
+        else {
+            res.render('user/blog', {
+                title: "Blog",
+                firstName: firstName,
+                sortedPosts: sortedPosts,
+                user: user,
+                errors: ["blog not created, please try again later..."]
+            })
+        }
     }
-    res.redirect(`/user/blog?firstName=${encodeURIComponent(user.firstName)}`);
 }
 
 exports.addComment = async (req, res, next) => {

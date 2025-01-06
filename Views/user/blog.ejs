@@ -1,6 +1,12 @@
 <%- include('../partials/header')%>
     <div class="container m-1 text-left">
         <h3 class="display-4">Create A Blog</h1>
+            <% if(errors.length!=0) {%>
+                <% for(error of errors){%>
+                    <p class="text-danger">
+                        <%= error%>
+                    </p>
+                    <% }} %>
             <div class="row border-bottom p-2">
                 <form action="/user/createPost" method="post" class="col-md-6">
                     <div class="form-group">

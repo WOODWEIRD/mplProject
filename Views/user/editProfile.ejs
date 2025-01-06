@@ -2,35 +2,45 @@
     <div class="container">
         <div class="row">
             <h1 class="display-4 mb-4">Edit Your Profile</h1>
-            <form action="/user/editProfile" method="post" class="col-md-6">
-                <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" class="form-control" value="<%=user.firstName%>" id="firstName" name="firstName">
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" class="form-control" value="<%=user.lastName%>" id="lastName" name="lastName">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" value="<%=user.email%>" id="email" name="email">
-                </div>
-                <div class="form-group">
-                    <label for="city">City</label>
-                    <input type="text" class="form-control" value="<%=user.address.city%>" id="city" name="city">
-                </div>
-                <div class="form-group">
-                    <label for="country">Country</label>
-                    <input type="text" class="form-control" value="<%=user.address.country%>" id="country"
-                        name="country">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" value="<%=user.password%>" id="password"
-                        name="password">
-                </div>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </form>
+            <% if(errors.length!=0) {%>
+                <% for(error of errors){%>
+                    <p class="text-danger">
+                        <%= error%>
+                    </p>
+                    <% }} %>
+                        <form action="/user/editProfile" method="post" class="col-md-6">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" class="form-control" value="<%=user.firstName%>" id="firstName"
+                                    name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" class="form-control" value="<%=user.lastName%>" id="lastName"
+                                    name="lastName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" value="<%=user.email%>" id="email" name="email"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" class="form-control" value="<%=user.address.city%>" id="city"
+                                    name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <input type="text" class="form-control" value="<%=user.address.country%>" id="country"
+                                    name="country" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" value="<%=user.password%>" id="password"
+                                    name="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
         </div>
     </div>
 
