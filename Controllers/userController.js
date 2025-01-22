@@ -25,13 +25,9 @@ exports.addLike = async (req, res) => {
     const updatedPost = await posts.updateOne({ _id: new ObjectId(req.params.postId) }, { $inc: { likes: 1 } });
     const userLikes = user.likedPosts;
     userLikes.push(req.params.postId);
-    const updatedLikes = await users.updateOne({ _id: new ObjectId(user._id) }, { $set: { likedPosts: userLikes } });
-    if (updatedLikes) {
-        console.log("likes updated");
-    } else {
-        console.log("likes update failed");
-
-    }
+    await users.updateOne({ _id: new ObjectId(user._id) }, { $set: { likedPosts: userLikes } })
+        .then(() => { console.log("like added"); })
+        .catch((e) => { console.log(e) });
     res.redirect(`/user/${req.params.sourcePage}`);
 }
 
@@ -72,7 +68,7 @@ exports.deleteComment = async (req, res) => {
     const newComments = postComments.filter((comment) => {
         return comment._id.toString() != commentId.toString();
     })
-    const updateComments = await posts.updateOne({ _id: new ObjectId(postId) }, { $set: { comments: newComments } })
+    await posts.updateOne({ _id: new ObjectId(postId) }, { $set: { comments: newComments } })
     res.redirect(`/user/${req.params.sourcePage}`);
 }
 

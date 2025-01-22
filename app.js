@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const path = require("path");
+const path = require('path')
 const database = require('./Middleware/mongoDB');
 const expressSession = require('express-session');
 const MongoDBSession = require('connect-mongodb-session')(expressSession);
@@ -29,6 +29,7 @@ app.set('views', 'Views');
 //json and parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+//static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
 const appListen = async () => {
